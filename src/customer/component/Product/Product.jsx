@@ -10,6 +10,8 @@ import {
     MenuItem,
     MenuItems,
 } from '@headlessui/react'
+import FilterListIcon from '@mui/icons-material/FilterList';
+
 import { ChevronDownIcon, FunnelIcon, MinusIcon, PlusIcon, Squares2X2Icon } from '@heroicons/react/20/solid'
 import { XMarkIcon } from '@heroicons/react/24/outline'
 import { useState } from 'react'
@@ -17,6 +19,7 @@ import { mens_kurta } from '../../../Data/mens_kurta'
 import { filters, singleFilter } from './FilterData';
 import ProductCard from './ProductCard'
 import { FormControl, FormControlLabel, FormLabel, Radio, RadioGroup } from '@mui/material'
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const sortOptions = [
   { name: 'Price: Low to High', href: '#', current: false },
@@ -30,7 +33,43 @@ function classNames(...classes) {
 }
 
 export default function Product() {
+
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
+  const location = useLocation();
+  const navigate = useNavigate()
+
+  const handleFilter =(value , sectionId)=>{
+    const searchParams = new URLSearchParams(location.search)
+
+    let filterValue=searchParams.getAll(sectionId)
+    if(filterValue.length >0 && filterValue[0].split(",").includes(value)){
+        filterValue=filterValue[0].split(",").filter((item)=>item!==value)
+
+        if(filterValue.length === 0){
+            searchParams.delete(sectionId)
+        }
+    }else{
+        filterValue.push(value)
+    }
+
+    if(filterValue.length>0){
+        searchParams.set(sectionId , filterValue.join(","))
+        
+    }
+    const query = searchParams.toString();
+        navigate({search:`?${query}`})
+  }
+
+  const handleRadioFilterChange=(e , sectionId)=>{
+    const searchParams = new URLSearchParams(location.search)
+
+    searchParams.set(sectionId,e.target.value)
+
+    const query = searchParams.toString();
+        navigate({search:`?${query}`})
+  }
+
+
 
   return (
     <div className="bg-white">
@@ -163,8 +202,13 @@ export default function Product() {
 
             <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-5">
               {/* Filters */}
+              <div>
+              <div className='py-10 flex justify-between items-center'>
+              <h1  className='text-lg opacity-50 font-bold text-left'>Filters</h1> 
+              <FilterListIcon />
+              </div>
               <form className="hidden lg:block">
-                
+              
 
                 {filters.map((section) => (
                   <Disclosure key={section.id} as="div" className="border-b border-gray-200 py-6">
@@ -182,6 +226,7 @@ export default function Product() {
                         {section.options.map((option, optionIdx) => (
                           <div key={option.value} className="flex items-center">
                             <input
+                            onChange={()=>handleFilter(option.value,section.id )}
                               defaultValue={option.value}
                               defaultChecked={option.checked}
                               id={`filter-${section.id}-${optionIdx}`}
@@ -223,7 +268,7 @@ export default function Product() {
                         {section.options.map((option, optionIdx) => (
                           
                           <>
-                          <FormControlLabel value={option.value} control={<Radio />} label={option.label} />
+                          <FormControlLabel onChange={(e)=>handleRadioFilterChange(e , section.id)} value={option.value} control={<Radio />} label={option.label} />
                             
                           </>
                         
@@ -236,6 +281,8 @@ export default function Product() {
                   </Disclosure>
                 ))}
               </form>
+              </div>
+              
 
               {/* Product grid */}
               <div className="lg:col-span-4 w-full">
