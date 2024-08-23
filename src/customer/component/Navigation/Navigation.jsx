@@ -14,7 +14,6 @@
 */
 'use client'
 
-import { Fragment, useState } from 'react'
 import {
   Dialog,
   DialogBackdrop,
@@ -30,12 +29,14 @@ import {
   TabPanels,
 } from '@headlessui/react'
 import { Bars3Icon, MagnifyingGlassIcon, ShoppingBagIcon, XMarkIcon } from '@heroicons/react/24/outline'
-import { navigation } from './navigationData'
-import { useLocation, useNavigate } from 'react-router-dom'
 import { Avatar, Button, Menu, MenuItem } from '@mui/material'
-import { Close } from '@mui/icons-material'
 import { deepPurple } from '@mui/material/colors'
-
+import { Fragment, useEffect, useState } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
+import { navigation } from './navigationData'
+import AuthModal from '../../Auth/AuthModal'
+import { useDispatch, useSelector } from 'react-redux'
+import { getUser, logout } from '../../../State/Auth/Action'
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
@@ -44,8 +45,8 @@ export default function Navigation() {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
-  // const dispatch = useDispatch()
-  // const { auth, cart } = useSelector((store) => store);
+  const dispatch = useDispatch()
+  const { auth, cart } = useSelector((store) => store);
   const [openAuthModal, setOpenAuthModal] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const openUserMenu = Boolean(anchorEl);
@@ -53,12 +54,13 @@ export default function Navigation() {
   const location = useLocation();
 
 
-// useEffect(() => {
-//   if (jwt) {
-//     dispatch(getUser(jwt));
-//     dispatch(getCart(jwt));
-//   }
-// }, [jwt]);
+
+useEffect(() => {
+  if (jwt) {
+    dispatch(getUser(jwt));
+    // dispatch(getCart(jwt));
+  }
+}, [jwt]);
 
 const handleUserClick = (event) => {
   setAnchorEl(event.currentTarget);
@@ -72,6 +74,7 @@ const handleOpen = () => {
 };
 const handleClose = () => {
   setOpenAuthModal(false);
+  navigate("/")
 };
 
 const handleCategoryClick = (category, section, item, close) => {
@@ -79,19 +82,19 @@ const handleCategoryClick = (category, section, item, close) => {
   close();
 };
 
-// useEffect(() => {
-//   if (auth.user) {
-//     handleClose();
-//   }
-//   if (location.pathname === "/login" || location.pathname === "/register") {
-//     navigate(-1);
-//   }
-// }, [auth.user]);
+useEffect(() => {
+  if (auth.user) {
+    handleClose();
+  }
+  if (location.pathname === "/login" || location.pathname === "/register") {
+    navigate(-1);
+  }
+}, [auth.user]);
 
-// const handleLogout = () => {
-//   handleCloseUserMenu();
-//   dispatch(logout());
-// };
+const handleLogout = () => {
+  handleCloseUserMenu();
+  dispatch(logout());
+};
 const handleMyOrderClick = () => {
   handleCloseUserMenu();
   // auth.user?.role === "ROLE_ADMIN"
@@ -203,7 +206,7 @@ const handleMyOrderClick = () => {
             <div className="space-y-6 border-t border-gray-200 px-4 py-6">
               <div className="flow-root">
                 <a href="#" className="-m-2 block p-2 font-medium text-gray-900">
-                  Sign in
+                  {/* Sign in InIn */}
                 </a>
               </div>
               <div className="flow-root">
@@ -366,9 +369,10 @@ const handleMyOrderClick = () => {
 
               <div className="ml-auto flex items-center">
                 <div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6">
-                 
+                
+                   {auth.user?.firstName ?(  
                     <div>
-                      <Avatar
+                     <Avatar
                         className="text-white"
                         onClick={handleUserClick}
                         aria-controls={open ? "basic-menu" : undefined}
@@ -381,7 +385,7 @@ const handleMyOrderClick = () => {
                           cursor: "pointer",
                         }}
                       >
-                        {/* {auth.user?.firstName[0].toUpperCase()} */}
+                        {auth.user?.firstName[0].toUpperCase()}
                       </Avatar>
                       {/* <Button
                         id="basic-button"
@@ -401,22 +405,24 @@ const handleMyOrderClick = () => {
                           "aria-labelledby": "basic-button",
                         }}
                       >
-                        <MenuItem onClick={handleMyOrderClick}>
+                        <MenuItem onClick={handleCloseUserMenu}>Profile</MenuItem>
+                        <MenuItem onClick={()=>navigate("/account/order")}>
                           {/* {auth.user?.role === "ROLE_ADMIN"
                             ? "Admin Dashboard"
                             : "My Orders"} */}
                             My Orders
                         </MenuItem>
-                        <MenuItem >Logout</MenuItem>
+                        <MenuItem onClick={handleLogout}>Logout</MenuItem>
                       </Menu>
                     </div>
-                 
+                   ):(
                     <Button
                       onClick={handleOpen}
                       className="text-sm font-medium text-gray-700 hover:text-gray-800"
                     >
                       Sign in
                     </Button>
+                 )}
                
                 </div>
 
@@ -454,7 +460,7 @@ const handleMyOrderClick = () => {
           </div>
         </nav>
       </header>
-      {/* <AuthModal handleClose={handleClose} open={openAuthModal} /> */}
+      <AuthModal handleClose={handleClose} open={openAuthModal} />
     </div>
   )
 }
