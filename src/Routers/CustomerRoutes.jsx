@@ -1,14 +1,14 @@
 import React from 'react'
 import { Route, Routes } from 'react-router-dom'
-import HomePage from '../customer/pages/HomePage/HomePage'
 import Cart from '../customer/component/Cart/Cart'
-import Navigation from '../customer/component/Navigation/Navigation'
-import Footer from '../customer/component/Footer/Footer'
-import Product from '../customer/component/Product/Product'
-import ProductDetails from '../customer/component/ProductDetails/ProductDetails'
 import Checkout from '../customer/component/Checkout/Checkout'
+import Footer from '../customer/component/Footer/Footer'
+import Navigation from '../customer/component/Navigation/Navigation'
 import Order from '../customer/component/Order/Order'
 import OrderDetails from '../customer/component/Order/OrderDetails'
+import Product from '../customer/component/Product/Product'
+import ProductDetails from '../customer/component/ProductDetails/ProductDetails'
+import HomePage from '../customer/pages/HomePage/HomePage'
 
 const CustomerRoutes = () => {
   return (
@@ -21,7 +21,7 @@ const CustomerRoutes = () => {
         <Route path='/register' element={<HomePage/>}></Route>
             <Route path='/' element={<HomePage/>}></Route>
             <Route path='/cart' element={<Cart/>}></Route>
-            <Route path='/:levelOne/:levelTwo/:levelThree' element={<Product/>}></Route>
+            <Route path='/:lavelOne/:lavelTwo/:lavelThree' element={<Product/>}></Route>
             <Route path='/product/:productId' element={<ProductDetails/>}></Route>
             <Route path='/checkout' element={<Checkout/>}></Route>
             <Route path='/account/order' element={<Order/>}></Route>

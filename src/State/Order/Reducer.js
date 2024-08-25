@@ -14,8 +14,8 @@ export const orderReducer = (state=initialState,action)=>{
         case CREATE_ORDER_REQUEST:
             return {
                 ...state,
-                error:null,
                 loading:true,
+                error:null,
             }
         case CREATE_ORDER_SUCCESS:
             return {

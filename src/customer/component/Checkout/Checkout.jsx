@@ -35,7 +35,7 @@ export default function Checkout() {
 
 <Box sx={{ width: '100%' }}>
       <Stepper activeStep={step}>
-        {steps.map((label, index) => {
+        {steps.map((label, step) => {
           const stepProps = {};
           const labelProps = {};
           

@@ -2,8 +2,13 @@ import { Button, Grid, TextField } from '@mui/material'
 import React from 'react'
 import AddressCard from '../AddressCard/AddressCard'
 import { Box } from '@mui/system'
+import { createOrder } from '../../../State/Order/Action'
+import { useDispatch } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 
 const DeliveryAddressForm = () => {
+    const dispatch=useDispatch();
+    const navigate=useNavigate();
     const handleSubmit = (e)=>{
         e.preventDefault(); // to avoide refresh of the page
         const data = new FormData(e.currentTarget)
@@ -14,15 +19,19 @@ const DeliveryAddressForm = () => {
             streetAddress:data.get("address"),
             city:data.get("city"),
             state:data.get("state"),
-            zipcode:data.get("zipcode"),
-            mobile:data.get("phoneNumber")
+            zipCode:data.get("zipcode"),
+            mobile:data.get("phoneNumber") 
         }
+
+        const orderData={address,navigate}
+        dispatch(createOrder(orderData));
+
         console.log("address" , address)
     }
   return (
     <div>
         <Grid container spacing={4}>
-                <Grid xs={12} lg={5} className='border rounded-e-md h-[30.5rem] overflow-y-scrollscroll'>
+                <Grid item xs={12} lg={5} className='border rounded-e-md h-[30.5rem] overflow-y-scrollscroll'>
                     <div className='p-5 py-7 border-b cursor-pointer text-left'>
                         <AddressCard />
                         <Button sx={{mt:2 , bgcolor:"RGB(145 85 253)"}} size='large' variant='contained'>Deliver Here</Button>
