@@ -6,6 +6,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import { getOrderById } from '../../../State/Order/Action'
 import { useLocation } from 'react-router-dom'
 import {store} from '../../../State/store';
+import createPalette from '@mui/material/styles/createPalette'
+import { createPayment } from '../../../State/Payment/Action'
 
 const OrderSummary = () => {
     const dispatch = useDispatch();
@@ -17,6 +19,10 @@ const OrderSummary = () => {
     useEffect(()=>{
         dispatch(getOrderById(orderId))
     },[orderId])
+
+    const handleCheckout=()=>{
+        dispatch(createPayment(orderId));
+    }
 
   return (
     <div>
@@ -54,7 +60,9 @@ const OrderSummary = () => {
             </div>
 
            </div>
-           <Button variant='contained' className='w-full ' sx={{px:"2.5rem" , py:"0.7rem" ,bgcolor:"#9155fd"}}>
+           <Button variant='contained' className='w-full ' sx={{px:"2.5rem" , py:"0.7rem" ,bgcolor:"#9155fd"}}
+           onClick={handleCheckout}
+           >
                    Checkout 
               </Button>
         </div>
